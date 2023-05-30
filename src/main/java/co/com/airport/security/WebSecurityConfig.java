@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import co.com.airport.security.services.UserDetailsServiceImpl;
 
@@ -51,13 +52,18 @@ public class WebSecurityConfig {
   
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-    .antMatchers("/api/auth/**").permitAll().antMatchers("/api/booking/getAll/**").permitAll()
-    .anyRequest().authenticated();
-    http.authenticationProvider(authenticationProvider());
-    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-    
-    return http.build();
+      http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+          .and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+          .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+          .and().authorizeRequests()
+          .antMatchers("/api/auth/**").permitAll()
+          .antMatchers("/api/booking/getAll/**").permitAll()
+          .anyRequest().authenticated();
+  
+      http.authenticationProvider(authenticationProvider());
+      http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+  
+      return http.build();
   }
+  
 }

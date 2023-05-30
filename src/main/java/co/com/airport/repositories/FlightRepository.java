@@ -1,10 +1,16 @@
-// package co.com.airport.repositories;
-// import org.springframework.data.jpa.repository.JpaRepository;
-// import org.springframework.stereotype.Repository;
+package co.com.airport.repositories;
 
-// import co.com.airport.entities.Flight;
+import java.util.Date;
+import java.util.List;
 
-// @Repository
-// public interface FlightRepository extends JpaRepository<Flight, Long>{
-    
-// }
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import co.com.airport.entities.Flight;
+
+@Repository
+public interface FlightRepository extends JpaRepository<Flight, Long> {
+    @Query("SELECT f.id, f.arrivalAirportName, f.arrivalCity, f.arrivalDate, f.departureAirportName, f.departureDate, f.departureCity FROM Flight f")
+    List<Flight> findFlightByFilters(String departureAirportName, String arrivalAirportName, String departureDate);
+}

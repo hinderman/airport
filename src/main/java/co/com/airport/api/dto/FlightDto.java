@@ -1,4 +1,6 @@
 package co.com.airport.api.dto;
+import java.sql.Date;
+
 import lombok.Data;
 
 @Data
